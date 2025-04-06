@@ -22,27 +22,6 @@ func (w *Worker) heartbeat() {
 }
 ```
 
-
-Scheduler tracks these timestamps (scheduler.go) and identifies if a worker has stopped responding:
-
-```go
-func (s *Scheduler) MonitorWorkers() {
-    for {
-        time.Sleep(2 * time.Second)
-        now := time.Now()
-
-        s.mu.Lock()
-        for id, lastBeat := range s.workerStatus {
-            if now.Sub(lastBeat) > 5*time.Second {
-                fmt.Printf("Worker %d failed!\n", id)
-                // Failure recovery logic here
-            }
-        }
-        s.mu.Unlock()
-    }
-}
-```
-
 #### ② Automatic Job Reassignment on Worker Failure:
 
 Upon detecting a worker failure, the scheduler requeues jobs assigned to the failed worker:
