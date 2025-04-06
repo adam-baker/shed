@@ -29,27 +29,28 @@ Upon detecting a worker failure, the scheduler requeues jobs assigned to the fai
 ```go
 
 func (s *Scheduler) MonitorWorkers() {
-	for {
-		time.Sleep(2 * time.Second)
-		now := time.Now()
+  for {
+    time.Sleep(2 * time.Second)
+      now := time.Now()
 
-		s.mu.Lock()
-		for id, lastBeat := range s.workerStatus {
-			if now.Sub(lastBeat) > 5*time.Second {
-				fmt.Printf("Worker %d failed!\n", id)
-				for _, job := range s.jobs {
-					if job.WorkerID == id && job.Status == InProgress {
-						fmt.Printf("Requeueing job %d from worker %d\n", job.ID, id)
-						job.Status = Queued
-						job.WorkerID = 0
-						s.jobQueue <- job
-					}
-				}
-				delete(s.workerStatus, id)
-			}
-		}
-		s.mu.Unlock()
-	}
+      s.mu.Lock()
+        for id, lastBeat := range s.workerStatus {
+          if now.Sub(lastBeat) > 5*time.Second {
+          fmt.Printf("Worker %d failed!\n", id)
+          for _, job := range s.jobs {
+            if job.WorkerID == id && job.Status == InProgress {
+            fmt.Printf("Requeueing job %d from worker %d\n", job.ID, id)
+            job.Status = Queued
+            job.WorkerID = 0
+            s.jobQueue <- job
+          }
+        }
+        delete(s.workerStatus, id)
+      }
+    }
+  s.mu.Unlock()
+  }
+}
 ```
 
 #### ③ Centralized Job Management:
