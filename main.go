@@ -21,11 +21,18 @@ func main() {
 	go scheduler.AssignJobs()
 	go scheduler.MonitorWorkers()
 
+	jobs := []*Job{
+		{ID: 1, Payload: "Job 1 payload", JobType: ShortJob},
+		{ID: 2, Payload: "Job 2 payload", JobType: MediumJob},
+		{ID: 3, Payload: "Job 3 payload", JobType: LongJob},
+		{ID: 4, Payload: "Job 4 payload", JobType: ShortJob},
+		{ID: 5, Payload: "Job 5 payload", JobType: MediumJob},
+	}
+
 	// Add jobs
-	for j := 1; j <= 10; j++ {
-		job := &Job{ID: j, Payload: fmt.Sprintf("Payload %d", j)}
+	for _, job := range jobs {
 		scheduler.AddJob(job)
-		fmt.Printf("Job %d added\n", j)
+		fmt.Printf("Job %d added\n", job.ID)
 	}
 
 	select {}
