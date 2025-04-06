@@ -48,7 +48,7 @@ func (s *Scheduler) MonitorWorkers() {
         delete(s.workerStatus, id)
       }
     }
-  s.mu.Unlock()
+    s.mu.Unlock()
   }
 }
 ```
